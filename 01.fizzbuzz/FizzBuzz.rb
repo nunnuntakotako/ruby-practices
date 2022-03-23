@@ -1,16 +1,11 @@
 (1..20).each do |num|
-    if num % 15 == 0
-        print "FizzBuzz\n"
-        num = num +1
-    elsif num % 5 == 0
-        print "Buzz\n"
-        num = num +1
-    elsif num % 3 == 0
-        print "Fizz\n"
-        num = num +1 
-    else
-        print "#{num}\n"
-        num = num +1 
-    end
-
+  if num % 15 == 0
+    puts "FizzBuzz"
+  elsif num % 5 == 0
+    puts "Buzz"
+  elsif num % 3 == 0
+    puts "Fizz"
+  else
+    puts "#{num}"
+  end
 end
