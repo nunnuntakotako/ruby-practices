@@ -8,29 +8,28 @@ class Calendar
   end
 
   def create_calendar
-    # set_end_day = Date.new(set_day.year,set_day.mon,-1).mday
-    set_day = Date.new(@year,@month,-1)                               
-    st_1w = Date.new(@year,@month,1).wday                
-    
-    cal = [set_day.year,set_day.mon,set_day.mday,st_1w] #年　月　最終日 1日の曜日
+    set_day = Date.new(@year,@month,-1)
+    start_week = Date.new(@year,@month,1).wday
+    this_year = set_day.year
+    this_month = set_day.mon
+    last_day = set_day.mday
+
     week = ["日","月","火","水","木","金","土"]
-    
-    puts "      #{cal[1]}月 #{cal[0]}"
+
+    puts "      #{this_month}月 #{this_year}"
     week.each do |w|
-      print "#{w} "                               
+      print "#{w} "
     end
-    
-    puts "\n"                                           
-    print " " * 3 * cal[3]                              
-    
-    (1 .. cal[2]).each do |day|
-      print day.to_s.rjust(2) + " "                     
-      cal[3] = cal[3]+1                                 
-      if cal[3]%7 == 0                                 
-        print "\n"
-      end
+
+    puts "\n"
+    print " " * 3 * start_week
+
+    (1 .. last_day).each do |day|
+      print day.to_s.rjust(2) + " "
+      start_week = start_week + 1
+      print "\n" if start_week % 7 == 0
     end
-    
+
   end
 end
 
