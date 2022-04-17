@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 score = ARGV[0]
-scores = score.chars
+scores = score.split(',')
 shots = []
 scores.each do |s|
   shots << if s == 'X'
@@ -12,15 +12,15 @@ scores.each do |s|
 end
 
 frame = 0
-max_frame = 10
-count = 0
-score = [0] * max_frame
+MAX_FRAME = 10
+shot_count = 0
+score = [0] * MAX_FRAME
 
 shots.length.times do |i|
-  if frame + 1 != max_frame
+  if frame + 1 != MAX_FRAME
     if shots[i] == 10
-      if count.zero?
-        count = 1
+      if shot_count.zero?
+        shot_count = 1
         score[frame] = shots[i] + shots[i + 1] + shots[i + 2]
       else
         score[frame] = shots[i] + shots[i + 1]
@@ -31,9 +31,9 @@ shots.length.times do |i|
     else
       score[frame] += shots[i]
     end
-    count += 1
-    if count == 2
-      count = 0
+    shot_count += 1
+    if shot_count == 2
+      shot_count = 0
       frame += 1
     end
 
