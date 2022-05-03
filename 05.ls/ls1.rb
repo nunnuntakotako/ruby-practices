@@ -2,25 +2,25 @@
 
 def arrangement
   contents = Dir.glob('*')
-  row = 3
+  RETSU = 3
   quantity = contents.size
-  column = quantity.divmod(row)[0] + 1
-  remainder = quantity.divmod(row)[1]
-  view = contents.each_slice(column).to_a
+  gyo = quantity.divmod(RETSU)[0] + 1
+    if quantity <= RETSU
+      gyo = quantity.divmod(RETSU)[0]
+    end
+  remainder = quantity.divmod(RETSU)[1]
+  view = contents.each_slice(gyo).to_a
   nils = []
 
-  if view[row - 1].size < column
-    (row - remainder).times { nils << nil }
-    view[row - 1] = view[row - 1].concat(nils)
-  end
+  view[-1] << nil while view[- 1].size < gyo
 
   output(view)
 end
 
 def output(view)
   arrange = view.transpose
-  arrange.each do |columns|
-    columns.each do |content|
+  arrange.each do |gyos|
+    gyos.each do |content|
       print content.to_s.ljust(20)
     end
     print "\n"
@@ -28,4 +28,3 @@ def output(view)
 end
 
 arrangement
-
