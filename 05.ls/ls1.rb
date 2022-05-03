@@ -1,26 +1,23 @@
 # frozen_string_literal: true
 
+COLUMN = 3
+
 def arrangement
   contents = Dir.glob('*')
-  RETSU = 3
   quantity = contents.size
-  gyo = quantity.divmod(RETSU)[0] + 1
-    if quantity <= RETSU
-      gyo = quantity.divmod(RETSU)[0]
-    end
-  remainder = quantity.divmod(RETSU)[1]
-  view = contents.each_slice(gyo).to_a
-  nils = []
+  row = quantity.divmod(COLUMN)[0] + 1
+  row = quantity.divmod(COLUMN)[0] if quantity <= COLUMN
+  view = contents.each_slice(row).to_a
 
-  view[-1] << nil while view[- 1].size < gyo
+  view[-1] << nil while view[- 1].size < row
 
   output(view)
 end
 
 def output(view)
   arrange = view.transpose
-  arrange.each do |gyos|
-    gyos.each do |content|
+  arrange.each do |rows|
+    rows.each do |content|
       print content.to_s.ljust(20)
     end
     print "\n"
