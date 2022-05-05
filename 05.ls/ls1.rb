@@ -5,7 +5,6 @@ COLUMN = 3
 def arrangement
   contents = Dir.glob('*')
   quantity = contents.length.to_f
-  p quantity
   row = ( quantity / COLUMN ).ceil
   view = contents.each_slice(row).to_a
 
