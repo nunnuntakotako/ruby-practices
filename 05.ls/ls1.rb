@@ -5,11 +5,21 @@ COLUMN = 3
 def arrangement
   contents = Dir.glob('*')
   quantity = contents.size
-  row = quantity.divmod(COLUMN)[0] + 1
-  row = quantity.divmod(COLUMN)[0] if quantity <= COLUMN
-  view = contents.each_slice(row).to_a
+  remainder = quantity.divmod(COLUMN)[1]
 
-  view[-1] << nil while view[- 1].size < row
+  row = if quantity <= COLUMN || remainder.zero?
+          quantity.divmod(COLUMN)[0]
+        else
+          quantity.divmod(COLUMN)[0] + 1
+        end
+
+  if remainder.zero?
+    view = contents.each_slice(row).to_a
+  else
+    remainder.times { view = contents.each_slice(row).to_a }
+  end
+
+  view[-1] << nil while view[-1].size < row
 
   output(view)
 end
