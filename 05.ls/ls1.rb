@@ -5,19 +5,8 @@ COLUMN = 3
 def arrangement
   contents = Dir.glob('*')
   quantity = contents.size
-  remainder = quantity.divmod(COLUMN)[1]
-
-  row = if quantity <= COLUMN || remainder.zero?
-          quantity.divmod(COLUMN)[0]
-        else
-          quantity.divmod(COLUMN)[0] + 1
-        end
-
-  if remainder.zero?
-    view = contents.each_slice(row).to_a
-  else
-    remainder.times { view = contents.each_slice(row).to_a }
-  end
+  row = quantity.ceil
+  view = contents.each_slice(row).to_a
 
   view[-1] << nil while view[-1].size < row
 
