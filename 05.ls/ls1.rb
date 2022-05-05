@@ -4,8 +4,9 @@ COLUMN = 3
 
 def arrangement
   contents = Dir.glob('*')
-  quantity = contents.size
-  row = quantity.ceil
+  quantity = contents.length.to_f
+  p quantity
+  row = ( quantity / COLUMN ).ceil
   view = contents.each_slice(row).to_a
 
   view[-1] << nil while view[-1].size < row
