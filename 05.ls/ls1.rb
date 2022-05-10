@@ -1,11 +1,18 @@
 # frozen_string_literal: true
 
+require 'optparse'
+
 COLUMN = 3
 
 def arrangement
-  contents = Dir.glob('*')
+  options = ARGV.getopts('a')
+  contents = if options['a']
+               Dir.glob('*', File::FNM_DOTMATCH)
+             else
+               Dir.glob('*')
+             end
   quantity = contents.length.to_f
-  row = ( quantity / COLUMN ).ceil
+  row = (quantity / COLUMN).ceil
   view = contents.each_slice(row).to_a
 
   view[-1] << nil while view[-1].size < row
