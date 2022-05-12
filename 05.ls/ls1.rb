@@ -6,11 +6,12 @@ COLUMN = 3
 
 def arrangement
   options = ARGV.getopts('a')
-  contents = if options['a']
-               Dir.glob('*', File::FNM_DOTMATCH)
-             else
-               Dir.glob('*')
-             end
+  args = if options['a']
+           ['*', File::FNM_DOTMATCH]
+         else
+           ['*']
+         end
+  contents = Dir.glob(*args)
   quantity = contents.length.to_f
   row = (quantity / COLUMN).ceil
   view = contents.each_slice(row).to_a
