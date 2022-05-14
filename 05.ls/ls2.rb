@@ -5,10 +5,10 @@ require 'optparse'
 COLUMN = 3
 
 def arrangement
-  options = ARGV.getopts('a')
-  args = ['*']
-  args << File::FNM_DOTMATCH if options['a']
-  contents = Dir.glob(*args)
+  contents = Dir.glob('*')
+  opt = OptionParser.new
+  opt.on('-a') { contents = Dir.glob('*', File::FNM_DOTMATCH) }
+  opt.parse(ARGV)
   quantity = contents.length.to_f
   row = (quantity / COLUMN).ceil
   view = contents.each_slice(row).to_a
