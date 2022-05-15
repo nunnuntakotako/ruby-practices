@@ -6,8 +6,8 @@ COLUMN = 3
 
 def arrangement
   options = ARGV.getopts('r')
-  args = ['*']
-  contents = options['r'] ? Dir.glob(*args).reverse : Dir.glob(*args)
+  contents = Dir.glob('*')
+  contents = contents.reverse if options['r']
   quantity = contents.length.to_f
   row = (quantity / COLUMN).ceil
   view = contents.each_slice(row).to_a
