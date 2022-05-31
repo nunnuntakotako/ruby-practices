@@ -23,7 +23,8 @@ def l_formatter
                   file_permission.split(/\A(.{1,2})/, 2)[1..]
                 end
     type = type_categorize(file_type)
-    rwx_categorize(file_type, type)
+    permissions = rwx_categorize(file_type)
+    rwx_convert(permissions, type)
 
     "#{type}  #{stat.nlink} #{user}  #{group}  #{stat.size}  #{file_inf.mon} #{file_inf.mday} #{file_inf.strftime('%H:%M')} #{name}"
   end
@@ -42,13 +43,14 @@ def type_categorize(file_type)
   }[file_type[0].to_i]
 end
 
-def rwx_categorize(file_type, type)
+def rwx_categorize(file_type)
   octal_number = file_type[1].chars.map(&:to_i).map { |types| types.to_s(2) }
+  octal_number.map { |per| per.chars.map(&:to_i) }
+end
 
-  permissions = octal_number.map { |per| per.chars.map(&:to_i) }
-
+def rwx_convert(permissions, type)
   permissions.map do |num|
-    (0..num.size - 1).map do |n|
+    (0..2).map do |n|
       type << if n.zero? && num[n] == 1
                 'r'
               elsif n == 1 && num[n] == 1
