@@ -51,12 +51,14 @@ end
 def rwx_convert(permissions, type)
   permissions.map do |num|
     (0..2).map do |n|
-      type << if n.zero? && num[n] == 1
-                'r'
-              elsif n == 1 && num[n] == 1
-                'w'
-              elsif n == 2 && num[n] == 1
-                'x'
+      type << if num[n] == 1
+                if n.zero?
+                  'r'
+                elsif n == 1
+                  'w'
+                elsif n == 2
+                  'x'
+                end
               else
                 '-'
               end
