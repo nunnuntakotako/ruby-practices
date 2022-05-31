@@ -56,7 +56,7 @@ def rwx_convert(permissions, type)
                   'r'
                 elsif n == 1
                   'w'
-                elsif n == 2
+                else
                   'x'
                 end
               else
