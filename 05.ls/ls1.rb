@@ -5,10 +5,9 @@ require 'optparse'
 
 COLUMN = 3
 
-options = ARGV.getopts('a', 'r', 'l', 'ar', 'al', 'rl', 'arl')
+options = ARGV.getopts('a', 'r', 'l')
 
-def l_formatter(options)
-  contents = file_call(options)
+def l_formatter(contents)
   arrange_l_option = contents.map do |file|
     file_inf = File.mtime(file)
     name = File.basename(file)
@@ -76,8 +75,7 @@ def arrangement_l(arrange_l_option)
   output(view)
 end
 
-def non_formatter(options)
-  contents = file_call(options)
+def non_formatter(contents)
   quantity = contents.length.to_f
   row = (quantity / COLUMN).ceil
   view = contents.each_slice(row).to_a
@@ -102,8 +100,10 @@ def file_call(options)
   options['r'] ? contents.reverse : contents
 end
 
+contents = file_call(options)
+
 if options['l']
-  l_formatter(options)
+  l_formatter(contents)
 else
-  non_formatter(options)
+  non_formatter(contents)
 end
