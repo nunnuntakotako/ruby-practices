@@ -3,9 +3,8 @@
 require 'etc'
 require 'optparse'
 
-COLUMN = 3
-
-options = ARGV.getopts('a', 'r', 'l')
+options = ARGV.getopts('l')
+contents = Dir.glob('*')
 
 def l_formatter(contents)
   arrange_l_option = contents.map do |file|
@@ -27,7 +26,8 @@ def l_formatter(contents)
 
     "#{type}  #{stat.nlink} #{user}  #{group}  #{stat.size}  #{file_inf.mon} #{file_inf.mday} #{file_inf.strftime('%H:%M')} #{name}"
   end
-  arrangement_l(arrange_l_option)
+  contents = arrange_l_option
+  output(contents)
 end
 
 def type_categorize(file_type)
@@ -65,45 +65,25 @@ def rwx_convert(permissions, type)
   end
 end
 
-def arrangement_l(arrange_l_option)
-  quantity = arrange_l_option.length.to_f
-  row = (quantity / COLUMN).ceil
-  view = arrange_l_option.each_slice(row).to_a
-
-  view[-1] << nil while view[-1].size < row
-
-  output(view)
-end
-
-def non_formatter(contents)
-  quantity = contents.length.to_f
-  row = (quantity / COLUMN).ceil
-  view = contents.each_slice(row).to_a
-
-  view[-1] << nil while view[-1].size < row
-
-  output(view)
-end
-
-def output(view)
-  arrange = view.transpose
-  arrange.each do |rows|
-    rows.each do |content|
-      print content.to_s.ljust(20)
-    end
+def output(contents)
+  contents.each do |content|
+    print content.to_s.ljust(20)
     print "\n"
   end
 end
 
-def file_call(options)
-  contents = Dir.glob('*', options['a'] ? File::FNM_DOTMATCH : 0)
-  options['r'] ? contents.reverse : contents
+def total(contents)
+  block_size = 0
+  contents.each do |content|
+    block_num = File::Stat.new(content)
+    block_size += block_num.blocks
+  end
+  "total #{block_size}"
 end
 
-contents = file_call(options)
-
 if options['l']
+  puts total(contents)
   l_formatter(contents)
 else
-  non_formatter(contents)
+  output(contents)
 end
