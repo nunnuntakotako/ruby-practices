@@ -68,3 +68,4 @@ else
   file_information = []
   lcommand_count(file_information, options)
 end
+
