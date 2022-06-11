@@ -87,3 +87,4 @@ if options['l']
 else
   output(contents)
 end
+
