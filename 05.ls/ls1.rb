@@ -5,9 +5,10 @@ require 'optparse'
 
 COLUMN = 3
 
-options = ARGV.getopts('a', 'r', 'l')
+options = ARGV.getopts('l')
 
-def l_formatter(contents)
+def l_formatter
+  contents = Dir.glob('*')
   arrange_l_option = contents.map do |file|
     file_inf = File.mtime(file)
     name = File.basename(file)
@@ -75,16 +76,6 @@ def arrangement_l(arrange_l_option)
   output(view)
 end
 
-def non_formatter(contents)
-  quantity = contents.length.to_f
-  row = (quantity / COLUMN).ceil
-  view = contents.each_slice(row).to_a
-
-  view[-1] << nil while view[-1].size < row
-
-  output(view)
-end
-
 def output(view)
   arrange = view.transpose
   arrange.each do |rows|
@@ -95,15 +86,19 @@ def output(view)
   end
 end
 
-def file_call(options)
-  contents = Dir.glob('*', options['a'] ? File::FNM_DOTMATCH : 0)
-  options['r'] ? contents.reverse : contents
+def non_formatter
+  contents = Dir.glob('*')
+  quantity = contents.length.to_f
+  row = (quantity / COLUMN).ceil
+  view = contents.each_slice(row).to_a
+
+  view[-1] << nil while view[-1].size < row
+
+  output(view)
 end
 
-contents = file_call(options)
-
 if options['l']
-  l_formatter(contents)
+  l_formatter
 else
-  non_formatter(contents)
+  non_formatter
 end
