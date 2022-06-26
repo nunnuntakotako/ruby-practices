@@ -3,6 +3,8 @@
 require 'optparse'
 
 options = ARGV.getopts('l')
+file_information = []
+input_contents = (!ARGF.argv.count.zero? ? ARGF.argv : readlines)
 
 def line_only(file_information)
   total_lines = 0
@@ -26,10 +28,10 @@ def all_count(file_information)
   puts "     #{total_lines}     #{total_words}    #{total_size} total" if file_information.length > 1
 end
 
-def lcommand_count(file_information, options)
+def lcommand_count(file_information, options, input_contents)
   file_list = []
 
-  ARGF.each do |list|
+  input_contents.each do |list|
     file_list << list
   end
 
@@ -45,26 +47,20 @@ def lcommand_count(file_information, options)
   file_information[1] = total_words
   file_information[2] = total_size
 
-  if options['l']
-    puts "      #{file_information[0]}"
-  else
-    puts "      #{file_information[0]}     #{file_information[1]}    #{file_information[2]}"
-  end
+  print "      #{file_information[0]}"
+  print "     #{file_information[1]}    #{file_information[2]}" unless options['l']
 end
 
 if !ARGF.argv.count.zero?
-  file_name = ARGF.argv
-  file_information = []
-  file_name.each do |files|
-    str = File.read(files)
+  input_contents.each do |content|
+    str = File.read(content)
     def count_words(str)
       ary = str.split(/\s+/)
       ary.size
     end
-    file_information << [str.lines.count, count_words(str), FileTest.size(files), File.basename(files)]
+    file_information << [str.lines.count, count_words(str), FileTest.size(content), File.basename(content)]
   end
   options['l'] ? line_only(file_information) : all_count(file_information)
 else
-  file_information = []
-  lcommand_count(file_information, options)
+  lcommand_count(file_information, options, input_contents)
 end
