@@ -5,62 +5,39 @@ require 'optparse'
 options = ARGV.getopts('l')
 file_information = []
 input_contents = (!ARGF.argv.count.zero? ? ARGF.argv : readlines)
+total = [0, 0, 0, 'total']
 
-def line_only(file_information)
-  total_lines = 0
-  file_information.each do |info|
-    puts "     #{info[0]} #{info[3]}"
-    total_lines += info[0].to_i
-  end
-  puts "     #{total_lines} total" if file_information.length > 1
+input_contents.each do |content|
+  str = content.include?("\n") ? content : File.read(content)
+  ary = str.split(/\s+/)
+  file_information << [
+    str.lines.count,
+    ary.size,
+    content ? str.bytesize : FileTest.size(content),
+    File.basename(content)
+  ]
 end
 
-def all_count(file_information)
-  total_lines = 0
-  total_words = 0
-  total_size = 0
-  file_information.each do |info|
-    puts "     #{info[0]}     #{info[1]}    #{info[2]} #{info[3]}"
-    total_lines += info[0].to_i
-    total_words += info[1].to_i
-    total_size += info[2].to_i
+unless input_contents == readlines
+  file_information.each do |file|
+    row = (options['l'] ? "      #{file[0]}   #{file[3]}\n" : "      #{file[0]}")
+    print row
+    print "      #{file[1]}       #{file[2]}   #{file[3]} \n" unless options['l']
   end
-  puts "     #{total_lines}     #{total_words}    #{total_size} total" if file_information.length > 1
 end
 
-def lcommand_count(file_information, options, input_contents)
-  file_list = []
-
-  input_contents.each do |list|
-    file_list << list
-  end
-
-  total_words = 0
-  total_size = 0
-  file_list.each do |files|
-    total_size += files.bytesize
-    ary = files.split(/\s+/)
-    total_words += ary.size.to_i
-  end
-
-  file_information[0] = file_list.size
-  file_information[1] = total_words
-  file_information[2] = total_size
-
-  print "      #{file_information[0]}"
-  print "     #{file_information[1]}    #{file_information[2]}" unless options['l']
+file_information.each do |file|
+  total[0] += file[0]
+  total[1] += file[1]
+  total[2] += file[2]
 end
 
-if !ARGF.argv.count.zero?
-  input_contents.each do |content|
-    str = File.read(content)
-    def count_words(str)
-      ary = str.split(/\s+/)
-      ary.size
-    end
-    file_information << [str.lines.count, count_words(str), FileTest.size(content), File.basename(content)]
+if file_information.size > 1
+  unless input_contents == readlines
+    row_total = (options['l'] ? "      #{total[0]}   #{total[3]}\n" : "      #{total[0]}")
+    print row_total
+    print "      #{total[1]}     #{total[2]}     #{total[3]}" unless options['l']
   end
-  options['l'] ? line_only(file_information) : all_count(file_information)
-else
-  lcommand_count(file_information, options, input_contents)
+  print "      #{total[0]}"
+  print "      #{total[1]}     #{total[2]}" unless options['l']
 end
