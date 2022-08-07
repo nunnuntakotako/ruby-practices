@@ -4,16 +4,11 @@ require 'optparse'
 
 options = ARGV.getopts('l')
 
-input_contents = (ARGF.argv.count.zero? ? [$stdin.read] : ARGF.argv)
-contents = []
+contents = ARGF.argv.count.zero? ? [[nil, $stdin.read]] : ARGF.argv.map { |filename| [filename, File.read(filename)] }
 total_count = 0
 total_word = 0
 total_size = 0
 MAX_WIDTH = 8
-
-input_contents.each do |name|
-  contents << (name.include?("\n") ? [nil, name] : [name, File.read(name)])
-end
 
 contents.each do |content|
   print content[1].count("\n").to_s.rjust(MAX_WIDTH)
@@ -28,7 +23,7 @@ contents.each do |content|
   total_size += content[1].bytesize
 end
 
-if input_contents.length > 1
+if contents.length > 1
   print total_count.to_s.rjust(MAX_WIDTH)
   unless options['l']
     print total_word.to_s.rjust(MAX_WIDTH)
