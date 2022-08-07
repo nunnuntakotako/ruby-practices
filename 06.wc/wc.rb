@@ -12,11 +12,7 @@ total_size = 0
 MAX_WIDTH = 8
 
 input_contents.each do |name|
-  contents << if name.include?("\n")
-                [nil, name]
-              else
-                [name, File.read(name)]
-              end
+  contents << (name.include?("\n") ? [nil, name] : [name, File.read(name)])
 end
 
 contents.each do |content|
